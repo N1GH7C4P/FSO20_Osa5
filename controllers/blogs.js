@@ -11,13 +11,6 @@ const getTokenFrom = request => {
   return null
 }
 
-blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog
-    .find({}).populate('user', { username: 1, name: 1 })
-
-  response.json(blogs.map(b => b.toJSON()))
-});
-
 blogsRouter.post('/', async (request, response, next) => {
   
   const body = request.body
@@ -45,6 +38,13 @@ blogsRouter.post('/', async (request, response, next) => {
       next(exception)  
   }
 })
+
+blogsRouter.get('/', async (request, response) => {
+  const blogs = await Blog
+    .find({}).populate('user', { username: 1, name: 1 })
+
+  response.json(blogs.map(b => b.toJSON()))
+});
 
 blogsRouter.delete('/:id', async (request, response, next) => {
   try {

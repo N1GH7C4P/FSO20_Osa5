@@ -7,6 +7,7 @@ const app = require('../app')
 const api = supertest(app)
 const jwt = require('jsonwebtoken')
 
+
 describe('when there is initially one user at db', () => {
   beforeEach(async () => {
     await User.deleteMany({})
@@ -157,6 +158,7 @@ describe('When there are multiple users and blogs at db', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
     expect(result.body.token.toLowerCase().startsWith('bearer '))
+    console.log(result.body.token)
   })
 
   test('Can post a blog using correct token.', async () => {
@@ -183,10 +185,7 @@ describe('When there are multiple users and blogs at db', () => {
       .expect('Content-Type', /application\/json/)
 
     const token = user.body.token
-    const decodedToken = jwt.verify(token, process.env.SECRET)
-
     console.log('token: '+token)
-    console.log('decoded token: '+decodedToken)
 
     const testBlog =
     {
@@ -195,11 +194,11 @@ describe('When there are multiple users and blogs at db', () => {
       likes: 3,
       url: 'www.ploki.fi',
       user: id,
-      authorization: 'bearer '+token
     }
     
     await api
       .post('/api/blogs')
+      .set({ Authorization: token })
       .send(testBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/)

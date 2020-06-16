@@ -56,7 +56,7 @@ test('a valid blog can be added ', async () => {
         likes: '5',
         url: 'www.blogi.fi'
     }
-  
+    
     await api
       .post('/api/blogs')
       .send(newBlog)

@@ -46,6 +46,21 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs.map(b => b.toJSON()))
 });
 
+blogsRouter.get('/:id', async (request, response, next) => {
+  try {
+    const blog = await Blog.findById(request.params.id)
+    if(blog) {
+      response.json(blog.toJSON())
+    } else {
+      response.status(404).end()
+    }
+
+    response.status(200).end()
+  } catch(exception) {
+    next(exception)
+  }
+})
+
 blogsRouter.delete('/:id', async (request, response, next) => {
   try {
     await Blog.findByIdAndRemove(request.params.id)
@@ -57,6 +72,8 @@ blogsRouter.delete('/:id', async (request, response, next) => {
 
 blogsRouter.put('/:id', async (request, response, next) => {
   
+  const body = request.body
+
   const blog = {
     title:body.title,
     author:body.author,
